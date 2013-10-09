@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.git.internal;
+package org.xwiki.git.script;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -38,7 +38,7 @@ import org.xwiki.script.service.ScriptService;
 import org.xwiki.test.jmock.AbstractComponentTestCase;
 
 /**
- * Unit tests for {@link GitScriptService}.
+ * Unit tests for {@link org.xwiki.git.script.GitScriptService}.
  *
  * @version $Id$
  * @since 4.2M1

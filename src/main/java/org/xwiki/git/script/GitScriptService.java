@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.git.internal;
+package org.xwiki.git.script;
 
 import java.io.File;
 
@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.environment.Environment;
 import org.xwiki.script.service.ScriptService;
+import org.xwiki.stability.Unstable;
 
 /**
  * Various APIs to make it easy to perform Git commands from within scripts.
@@ -42,6 +43,7 @@ import org.xwiki.script.service.ScriptService;
 @Component
 @Named("git")
 @Singleton
+@Unstable
 public class GitScriptService implements ScriptService
 {
     /**
