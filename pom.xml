@@ -23,21 +23,38 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.xwiki.platform</groupId>
-    <artifactId>xwiki-platform-core</artifactId>
-    <version>9.6-SNAPSHOT</version>
+    <groupId>org.xwiki.contrib</groupId>
+    <artifactId>parent-platform</artifactId>
+    <version>8.4-8</version>
   </parent>
-  <artifactId>xwiki-platform-git</artifactId>
-  <name>XWiki Platform - Git</name>
+  <artifactId>api-git</artifactId>
+  <version>9.6-SNAPSHOT</version>
+  <name>Git API</name>
   <packaging>jar</packaging>
   <description>Make it easy to run Git commands in Java and from wiki pages</description>
   <properties>
     <xwiki.jacoco.instructionRatio>0.87</xwiki.jacoco.instructionRatio>
-    <!-- Name to display by the Extension Manager -->
-    <xwiki.extension.name>Git API</xwiki.extension.name>
     <!-- Old names of this module used for retro compatibility when resolving dependencies of old extensions -->
-    <xwiki.extension.features>vincentmassol:git-module</xwiki.extension.features>
+    <xwiki.extension.features>vincentmassol:git-module,org.xwiki.platform:xwiki-platform-git</xwiki.extension.features>
+    <xwiki.release.jira.skip>true</xwiki.release.jira.skip>
+    <xwiki.issueManagement.jira.id>GIT</xwiki.issueManagement.jira.id>
   </properties>
+  <scm>
+    <connection>scm:git:git://github.com/xwiki-contrib/api-git.git</connection>
+    <developerConnection>scm:git:git@github.com:xwiki-contrib/api-git.git</developerConnection>
+    <url>https://github.com/xwiki-contrib/api-git</url>
+    <tag>HEAD</tag>
+  </scm>
+  <developers>
+    <developer>
+      <id>vmassol</id>
+      <name>Vincent Massol</name>
+    </developer>
+    <developer>
+      <id>xwikidev</id>
+      <name>XWiki Development Team</name>
+    </developer>
+  </developers>
   <dependencies>
     <dependency>
       <groupId>org.xwiki.commons</groupId>
@@ -63,7 +80,6 @@
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
     </dependency>
-
     <!-- Test Dependencies -->
     <dependency>
       <groupId>commons-io</groupId>
