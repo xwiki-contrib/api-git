@@ -11,4 +11,4 @@ Make it easy to run Git commands in Java and from wiki pages.
 * License: LGPL 2.1
 * Translations: N/A
 * Sonar Dashboard: N/A
-* Continuous Integration Status: [![Build Status](http://ci.xwiki.org/job/XWiki%20Contrib/job/git-api/job/master/badge/icon)](http://ci.xwiki.org/job/XWiki%20Contrib/job/git-api/job/master/)
+* Continuous Integration Status: [![Build Status](http://ci.xwiki.org/job/XWiki%20Contrib/job/api-git/job/master/badge/icon)](http://ci.xwiki.org/job/XWiki%20Contrib/job/api-git/job/master/)
