@@ -119,17 +119,20 @@ public class DefaultGitManager implements GitManager
         }
 
         CommitFinder finder = new CommitFinder(repositories);
+
         CommitCountFilter countFilter = new CommitCountFilter();
         AuthorHistogramFilter histogramFilter = new AuthorHistogramFilter();
         AuthorSetFilter authorFilter = new AuthorSetFilter();
-        AndCommitFilter filters = new AndCommitFilter(countFilter, authorFilter, histogramFilter);
 
+        AndCommitFilter filters = new AndCommitFilter();
         if (since != null) {
             AuthorDateFilter dateFilter = new AuthorDateFilter(since);
-            finder.setFilter(dateFilter);
+            filters.add(dateFilter);
         }
 
-        finder.setMatcher(filters).find();
+        filters.add(countFilter, authorFilter, histogramFilter);
+
+        finder.setFilter(filters).find();
 
         return histogramFilter.getHistogram().getUserActivity(new CommitCountComparator());
     }

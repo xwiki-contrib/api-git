@@ -84,7 +84,7 @@ public class GitScriptServiceTest
 
         CommitFinder finder = new CommitFinder(repository);
         CommitCountFilter count = new CommitCountFilter();
-        finder.setMatcher(count);
+        finder.setFilter(count);
         finder.find();
 
         Assert.assertEquals(1, count.getCount());
