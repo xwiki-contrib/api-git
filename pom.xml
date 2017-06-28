@@ -36,7 +36,6 @@
     <xwiki.jacoco.instructionRatio>0.87</xwiki.jacoco.instructionRatio>
     <!-- Old names of this module used for retro compatibility when resolving dependencies of old extensions -->
     <xwiki.extension.features>vincentmassol:git-module,org.xwiki.platform:xwiki-platform-git</xwiki.extension.features>
-    <xwiki.release.jira.skip>true</xwiki.release.jira.skip>
     <xwiki.issueManagement.jira.id>GIT</xwiki.issueManagement.jira.id>
   </properties>
   <scm>
