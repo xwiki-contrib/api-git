@@ -37,6 +37,7 @@
     <!-- Old names of this module used for retro compatibility when resolving dependencies of old extensions -->
     <xwiki.extension.features>vincentmassol:git-module,org.xwiki.platform:xwiki-platform-git</xwiki.extension.features>
     <xwiki.issueManagement.jira.id>GIT</xwiki.issueManagement.jira.id>
+    <xwiki.release.jira.skip>false</xwiki.release.jira.skip>
   </properties>
   <scm>
     <connection>scm:git:git://github.com/xwiki-contrib/api-git.git</connection>
