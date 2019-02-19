@@ -28,7 +28,7 @@
     <version>8.4-8</version>
   </parent>
   <artifactId>api-git</artifactId>
-  <version>9.8-SNAPSHOT</version>
+  <version>9.8</version>
   <name>Git API</name>
   <packaging>jar</packaging>
   <description>Make it easy to run Git commands in Java and from wiki pages</description>
@@ -42,7 +42,7 @@
     <connection>scm:git:git://github.com/xwiki-contrib/api-git.git</connection>
     <developerConnection>scm:git:git@github.com:xwiki-contrib/api-git.git</developerConnection>
     <url>https://github.com/xwiki-contrib/api-git</url>
-    <tag>HEAD</tag>
+    <tag>api-git-9.8</tag>
   </scm>
   <developers>
     <developer>
