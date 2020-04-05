@@ -35,7 +35,7 @@ import org.xwiki.component.annotation.Role;
  * @since 5.3M2
  */
 @Role
-public interface GitManager
+public interface GitManager extends PrivateGitManager
 {
     /**
      * Clone a Git repository by storing it locally in the XWiki Permanent directory. If the repository is already
