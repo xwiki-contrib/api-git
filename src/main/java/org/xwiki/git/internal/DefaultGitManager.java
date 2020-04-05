@@ -124,7 +124,7 @@ public class DefaultGitManager implements GitManagerNew
             if (!gitDirectory.exists()) {
                 // Step 2.1: Need to clone the remote repository since it doesn't exist
                 git.cloneRepository()
-                        .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username,token))
+                        .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, token))
                         .setDirectory(localDirectory)
                         .setURI(repositoryURI)
                         .call();
