@@ -102,6 +102,41 @@ public class DefaultGitManager implements GitManager
     }
 
     @Override
+    public Repository getRepository(String repositoryURI, String localDirectoryName, String username, String token)
+    {
+        Repository repository;
+
+        File localGitDirectory = new File(this.environment.getPermanentDirectory(), "git");
+        File localDirectory = new File(localGitDirectory, localDirectoryName);
+        File gitDirectory = new File(localDirectory, ".git");
+        this.logger.debug("Local Git repository is at [{}]", gitDirectory);
+        FileRepositoryBuilder builder = new FileRepositoryBuilder();
+
+        try {
+            // Step 1: Initialize Git environment
+            repository = builder.setGitDir(gitDirectory)
+                    .readEnvironment()
+                    .findGitDir()
+                    .build();
+            Git git = new Git(repository);
+
+            // Step 2: Verify if the directory exists and isn't empty.
+            if (!gitDirectory.exists()) {
+                // Step 2.1: Need to clone the remote repository since it doesn't exist
+                git.cloneRepository()
+                        .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username,token))
+                        .setDirectory(localDirectory)
+                        .setURI(repositoryURI)
+                        .call();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("Failed to execute Git command in [%s]", gitDirectory), e);
+        }
+
+        return repository;
+    }
+
+    @Override
     public Set<PersonIdent> findAuthors(List<Repository> repositories)
     {
         CommitFinder finder = new CommitFinder(repositories);
