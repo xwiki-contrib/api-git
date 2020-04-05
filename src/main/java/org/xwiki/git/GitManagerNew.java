@@ -31,7 +31,7 @@ import org.xwiki.stability.Unstable;
  */
 @Unstable
 @Role
-public interface PrivateGitManager
+public interface GitManagerNew extends GitManager
 {
     /**
      * Clone a Private Git repository using the credentials provided by user and store it locally in the
