@@ -33,7 +33,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.gitective.core.stat.UserCommitActivity;
 import org.joda.time.DateTime;
 import org.xwiki.component.annotation.Component;
-import org.xwiki.git.GitManager;
+import org.xwiki.git.GitManagerNew;
 import org.xwiki.script.service.ScriptService;
 
 /**
@@ -63,7 +63,7 @@ import org.xwiki.script.service.ScriptService;
 public class GitScriptService implements ScriptService
 {
     @Inject
-    private GitManager gitManager;
+    private GitManagerNew gitManager;
 
     /**
      * Clone a Git repository by storing it locally in the XWiki Permanent directory. If the repository is already
