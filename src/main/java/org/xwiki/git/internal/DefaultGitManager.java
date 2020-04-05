@@ -42,7 +42,7 @@ import org.gitective.core.stat.UserCommitActivity;
 import org.slf4j.Logger;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.environment.Environment;
-import org.xwiki.git.GitManager;
+import org.xwiki.git.GitManagerNew;
 
 /**
  * Provides services to access a Git repository by storing the data in the XWiki permanent directory.
@@ -52,7 +52,7 @@ import org.xwiki.git.GitManager;
  */
 @Component
 @Singleton
-public class DefaultGitManager implements GitManager
+public class DefaultGitManager implements GitManagerNew
 {
     /**
      * Required to get access to the Environment's permanent directory, where the Script service will clone Git
