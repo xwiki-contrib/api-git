@@ -89,7 +89,7 @@ public class GitScriptService implements ScriptService
      * @param username the username of Git user
      * @param accessCode the password or OAuth or personal access token that authenticates with the git user id.
      * @return the cloned Repository instance
-     * @since 12.3RC1
+     * @since 9.8
      */
     public Repository getPrivateRepository(String repositoryURI, String localDirectoryName, String username,
             String accessCode)
