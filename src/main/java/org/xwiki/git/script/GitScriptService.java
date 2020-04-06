@@ -35,6 +35,7 @@ import org.joda.time.DateTime;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.git.GitManager;
 import org.xwiki.script.service.ScriptService;
+import org.xwiki.stability.Unstable;
 
 /**
  * Various APIs to make it easy to perform Git commands from within scripts.
@@ -77,6 +78,25 @@ public class GitScriptService implements ScriptService
     public Repository getRepository(String repositoryURI, String localDirectoryName)
     {
         return this.gitManager.getRepository(repositoryURI, localDirectoryName);
+    }
+
+    /**
+     * Clone a Private Git repository using the credentials provided by user and store it locally in the
+     * XWiki Permanent directory. If the repository is already cloned, no action is done.
+     *
+     * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
+     * @param localDirectoryName the name of the directory where the Git repository will be cloned (this directory is
+     *        relative to the permanent directory
+     * @param username the username of Git user
+     * @param accessCode the password or OAuth or personal access token that authenticates with the git user id.
+     * @return the cloned Repository instance
+     * @since 9.8
+     */
+    @Unstable
+    public Repository getPrivateRepository(String repositoryURI, String localDirectoryName, String username,
+        String accessCode)
+    {
+        return this.gitManager.getPrivateRepository(repositoryURI, localDirectoryName, username, accessCode);
     }
 
     /**

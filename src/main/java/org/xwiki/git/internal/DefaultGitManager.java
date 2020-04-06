@@ -27,10 +27,12 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.gitective.core.CommitFinder;
 import org.gitective.core.filter.commit.AndCommitFilter;
 import org.gitective.core.filter.commit.AuthorDateFilter;
@@ -67,38 +69,61 @@ public class DefaultGitManager implements GitManager
     @Inject
     private Logger logger;
 
-    @Override
-    public Repository getRepository(String repositoryURI, String localDirectoryName)
+    private Repository getGitRepository(String repositoryURI, String localDirectoryName, String username,
+        String accessCode)
     {
         Repository repository;
 
+        // Specify the local directory where the repository will be saved.
         File localGitDirectory = new File(this.environment.getPermanentDirectory(), "git");
         File localDirectory = new File(localGitDirectory, localDirectoryName);
         File gitDirectory = new File(localDirectory, ".git");
         this.logger.debug("Local Git repository is at [{}]", gitDirectory);
-        FileRepositoryBuilder builder = new FileRepositoryBuilder();
 
+        // Initialize builder for the Git environment.
+        FileRepositoryBuilder builder = new FileRepositoryBuilder();
         try {
-            // Step 1: Initialize Git environment
+            // Step 1: Initialize Git environment.
             repository = builder.setGitDir(gitDirectory)
-                .readEnvironment()
-                .findGitDir()
-                .build();
+                    .readEnvironment()
+                    .findGitDir()
+                    .build();
             Git git = new Git(repository);
 
             // Step 2: Verify if the directory exists and isn't empty.
             if (!gitDirectory.exists()) {
-                // Step 2.1: Need to clone the remote repository since it doesn't exist
-                git.cloneRepository()
-                    .setDirectory(localDirectory)
-                    .setURI(repositoryURI)
-                    .call();
+                // Step 2.1: Clone the remote repository since it doesn't exist, initialize CloneCommand.
+                CloneCommand cloneCommand = git.cloneRepository();
+
+                // Step 2.2: Check if credentials are provided.
+                if (username != null && accessCode != null) {
+                    // Step 2.2.1: Credentials are provided hence set the credentials.
+                    cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, accessCode));
+                }
+
+                // Step 2.3: Set the directory and URI, then call the command.
+                cloneCommand.setDirectory(localDirectory)
+                        .setURI(repositoryURI)
+                        .call();
             }
         } catch (Exception e) {
             throw new RuntimeException(String.format("Failed to execute Git command in [%s]", gitDirectory), e);
         }
 
         return repository;
+    }
+
+    @Override
+    public Repository getRepository(String repositoryURI, String localDirectoryName)
+    {
+        return getGitRepository(repositoryURI, localDirectoryName, null, null);
+    }
+
+    @Override
+    public Repository getPrivateRepository(String repositoryURI, String localDirectoryName, String username,
+        String accessCode)
+    {
+        return getGitRepository(repositoryURI, localDirectoryName, username, accessCode);
     }
 
     @Override

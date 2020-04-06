@@ -27,6 +27,7 @@ import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
 import org.gitective.core.stat.UserCommitActivity;
 import org.xwiki.component.annotation.Role;
+import org.xwiki.stability.Unstable;
 
 /**
  * Provides services to access a Git repository.
@@ -47,6 +48,25 @@ public interface GitManager
      * @return the cloned Repository instance
      */
     Repository getRepository(String repositoryURI, String localDirectoryName);
+
+    /**
+     * Clone a Private Git repository using the credentials provided by user and store it locally in the
+     * XWiki Permanent directory. If the repository is already cloned, no action is done.
+     *
+     * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
+     * @param localDirectoryName the name of the directory where the Git repository will be cloned (this directory is
+     *        relative to the permanent directory
+     * @param username the username of Git user
+     * @param accessCode the password or OAuth or personal access token that authenticates with the git user id.
+     * @return the cloned Repository instance
+     * @since 9.8
+     */
+    @Unstable
+    default Repository getPrivateRepository(String repositoryURI, String localDirectoryName, String username,
+        String accessCode)
+    {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Find all authors who have ever committed code in the passed repositories.
