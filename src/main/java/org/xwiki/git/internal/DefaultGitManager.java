@@ -120,8 +120,8 @@ public class DefaultGitManager implements GitManager
     }
 
     @Override
-    public Repository getPrivateRepository(String repositoryURI, String localDirectoryName,
-            String username, String accessCode)
+    public Repository getPrivateRepository(String repositoryURI, String localDirectoryName, String username,
+            String accessCode)
     {
         return getGitRepository(repositoryURI, localDirectoryName, username, accessCode);
     }
