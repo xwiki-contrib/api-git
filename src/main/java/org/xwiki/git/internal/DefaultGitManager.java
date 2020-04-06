@@ -70,7 +70,7 @@ public class DefaultGitManager implements GitManager
     private Logger logger;
 
     private Repository getGitRepository(String repositoryURI, String localDirectoryName, String username,
-            String accessCode)
+        String accessCode)
     {
         Repository repository;
 
@@ -121,7 +121,7 @@ public class DefaultGitManager implements GitManager
 
     @Override
     public Repository getPrivateRepository(String repositoryURI, String localDirectoryName, String username,
-            String accessCode)
+        String accessCode)
     {
         return getGitRepository(repositoryURI, localDirectoryName, username, accessCode);
     }
