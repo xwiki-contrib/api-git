@@ -69,8 +69,8 @@ public class DefaultGitManager implements GitManager
     @Inject
     private Logger logger;
 
-    private Repository getGitRepository(String repositoryURI, String localDirectoryName,
-                                        String username, String token)
+    private Repository getGitRepository(String repositoryURI, String localDirectoryName, String username,
+            String accessCode)
     {
         Repository repository;
 
@@ -96,9 +96,9 @@ public class DefaultGitManager implements GitManager
                 CloneCommand cloneCommand = git.cloneRepository();
 
                 // Step 2.2: Check if credentials are provided.
-                if (username != null && token != null) {
+                if (username != null && accessCode != null) {
                     // Step 2.2.1: Credentials are provided hence set the credentials.
-                    cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username,token));
+                    cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, accessCode));
                 }
 
                 // Step 2.3: Set the directory and URI, then call the command.
@@ -121,7 +121,7 @@ public class DefaultGitManager implements GitManager
 
     @Override
     public Repository getPrivateRepository(String repositoryURI, String localDirectoryName,
-                                           String username, String token)
+            String username, String token)
     {
         return getGitRepository(repositoryURI, localDirectoryName, username, token);
     }
