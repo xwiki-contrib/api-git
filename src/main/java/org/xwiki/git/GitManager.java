@@ -27,6 +27,7 @@ import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
 import org.gitective.core.stat.UserCommitActivity;
 import org.xwiki.component.annotation.Role;
+import org.xwiki.stability.Unstable;
 
 /**
  * Provides services to access a Git repository.
@@ -60,6 +61,7 @@ public interface GitManager
      * @return the cloned Repository instance
      * @since 9.8
      */
+    @Unstable
     default Repository getPrivateRepository(String repositoryURI, String localDirectoryName, String username,
             String accessCode)
     {
