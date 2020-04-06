@@ -94,7 +94,7 @@ public class GitScriptService implements ScriptService
      */
     @Unstable
     public Repository getPrivateRepository(String repositoryURI, String localDirectoryName, String username,
-            String accessCode)
+        String accessCode)
     {
         return this.gitManager.getPrivateRepository(repositoryURI, localDirectoryName, username, accessCode);
     }
