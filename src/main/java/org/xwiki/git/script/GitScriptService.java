@@ -35,6 +35,7 @@ import org.joda.time.DateTime;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.git.GitManager;
 import org.xwiki.script.service.ScriptService;
+import org.xwiki.stability.Unstable;
 
 /**
  * Various APIs to make it easy to perform Git commands from within scripts.
@@ -91,6 +92,7 @@ public class GitScriptService implements ScriptService
      * @return the cloned Repository instance
      * @since 9.8
      */
+    @Unstable
     public Repository getPrivateRepository(String repositoryURI, String localDirectoryName, String username,
             String accessCode)
     {
