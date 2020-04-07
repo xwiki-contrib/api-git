@@ -59,8 +59,8 @@ public class GitScriptServiceTest
     @Unstable
     private void getGitRepositoryAndFindAuthors(String username, String accessCode) throws Exception
     {
-        Repository repository;
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
+        Repository repository;
         if (username == null && accessCode == null) {
             repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED);
         } else {
@@ -84,8 +84,8 @@ public class GitScriptServiceTest
     @Unstable
     private void getGitCountCommits(String username, String accessCode) throws Exception
     {
-        Repository repository;
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
+        Repository repository;
         if (username == null && accessCode == null) {
             repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED);
         } else {
