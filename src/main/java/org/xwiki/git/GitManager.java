@@ -62,7 +62,7 @@ public interface GitManager
      * @since 9.8
      */
     @Unstable
-    default Repository getPrivateRepository(String repositoryURI, String localDirectoryName, String username,
+    default Repository getRepository(String repositoryURI, String localDirectoryName, String username,
         String accessCode)
     {
         throw new UnsupportedOperationException();
