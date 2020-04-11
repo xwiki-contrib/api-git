@@ -55,40 +55,11 @@ public class GitScriptServiceTest
 
     private File testRepository;
     
-    private void getGitRepositoryAndFindAuthors(String username, String accessCode) throws Exception
-    {
-        GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
-        Repository repository;
-        if (username == null && accessCode == null) {
-            repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED);
-        } else {
-            repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
-                username, accessCode);
-        }
-        Assert.assertEquals(true, new Git(repository).pull().call().isSuccessful());
-
-        CommitFinder finder = new CommitFinder(repository);
-        CommitCountFilter count = new CommitCountFilter();
-        finder.setFilter(count);
-        finder.find();
-
-        Assert.assertEquals(1, count.getCount());
-
-        Set<PersonIdent> authors = service.findAuthors(repository);
-        Assert.assertEquals(1, authors.size());
-        Assert.assertEquals("test author", authors.iterator().next().getName());
-    }
-    
     private void getGitCountCommits(String username, String accessCode) throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
-        Repository repository;
-        if (username == null && accessCode == null) {
-            repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED);
-        } else {
-            repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
-                username, accessCode);
-        }
+        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
+                "test author", "TestAccessCode");
         Assert.assertEquals(true, new Git(repository).pull().call().isSuccessful());
 
         UserCommitActivity[] commits = service.countAuthorCommits(1, repository);
@@ -120,28 +91,24 @@ public class GitScriptServiceTest
         gitHelper.add(testRepository, "test.txt", "test content", new PersonIdent("test author", "author@doe.com"),
             new PersonIdent("test committer", "committer@doe.com"), "first commit");
     }
-
-    @Test
-    public void getRepositoryAndFindAuthors() throws Exception
-    {
-        getGitRepositoryAndFindAuthors(null, null);
-    }
-
-    @Test
-    public void getCountCommits() throws Exception
-    {
-        getGitCountCommits(null, null);
-    }
     
     @Test
-    public void getPrivateRepositoryAndFindAuthors() throws Exception
+    public void getGitRepositoryAndFindAuthors(String username, String accessCode) throws Exception
     {
-        getGitRepositoryAndFindAuthors("test author", "TestAccessCode");
-    }
+        GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
+        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
+                "test author", "TestAccessCode");
+        Assert.assertEquals(true, new Git(repository).pull().call().isSuccessful());
 
-    @Test
-    public void getPrivateCountCommits() throws Exception
-    {
-        getGitCountCommits("test author", "TestAccessCode");
+        CommitFinder finder = new CommitFinder(repository);
+        CommitCountFilter count = new CommitCountFilter();
+        finder.setFilter(count);
+        finder.find();
+
+        Assert.assertEquals(1, count.getCount());
+
+        Set<PersonIdent> authors = service.findAuthors(repository);
+        Assert.assertEquals(1, authors.size());
+        Assert.assertEquals("test author", authors.iterator().next().getName());
     }
 }
