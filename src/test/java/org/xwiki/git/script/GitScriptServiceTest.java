@@ -34,7 +34,6 @@ import org.xwiki.environment.Environment;
 import org.xwiki.environment.internal.StandardEnvironment;
 import org.xwiki.git.GitHelper;
 import org.xwiki.script.service.ScriptService;
-import org.xwiki.stability.Unstable;
 import org.xwiki.test.ComponentManagerRule;
 import org.xwiki.test.annotation.AllComponents;
 
@@ -55,8 +54,7 @@ public class GitScriptServiceTest
     public ComponentManagerRule componentManager = new ComponentManagerRule();
 
     private File testRepository;
-
-    @Unstable
+    
     private void getGitRepositoryAndFindAuthors(String username, String accessCode) throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
@@ -64,7 +62,7 @@ public class GitScriptServiceTest
         if (username == null && accessCode == null) {
             repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED);
         } else {
-            repository = service.getPrivateRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
+            repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
                 username, accessCode);
         }
         Assert.assertEquals(true, new Git(repository).pull().call().isSuccessful());
@@ -80,8 +78,7 @@ public class GitScriptServiceTest
         Assert.assertEquals(1, authors.size());
         Assert.assertEquals("test author", authors.iterator().next().getName());
     }
-
-    @Unstable
+    
     private void getGitCountCommits(String username, String accessCode) throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
@@ -89,7 +86,7 @@ public class GitScriptServiceTest
         if (username == null && accessCode == null) {
             repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED);
         } else {
-            repository = service.getPrivateRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
+            repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
                 username, accessCode);
         }
         Assert.assertEquals(true, new Git(repository).pull().call().isSuccessful());
@@ -135,15 +132,13 @@ public class GitScriptServiceTest
     {
         getGitCountCommits(null, null);
     }
-
-    @Unstable
+    
     @Test
     public void getPrivateRepositoryAndFindAuthors() throws Exception
     {
         getGitRepositoryAndFindAuthors("test author", "TestAccessCode");
     }
 
-    @Unstable
     @Test
     public void getPrivateCountCommits() throws Exception
     {
