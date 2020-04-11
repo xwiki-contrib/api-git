@@ -54,23 +54,6 @@ public class GitScriptServiceTest
     public ComponentManagerRule componentManager = new ComponentManagerRule();
 
     private File testRepository;
-    
-    private void getGitCountCommits(String username, String accessCode) throws Exception
-    {
-        GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
-        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
-                "test author", "TestAccessCode");
-        Assert.assertEquals(true, new Git(repository).pull().call().isSuccessful());
-
-        UserCommitActivity[] commits = service.countAuthorCommits(1, repository);
-        // 1 author
-        Assert.assertEquals(1, commits.length);
-        // 1 commit
-        Assert.assertEquals(1, commits[0].getCount());
-        // Verify user name and email
-        Assert.assertEquals("test author", commits[0].getName());
-        Assert.assertEquals("author@doe.com", commits[0].getEmail());
-    }
 
     @Before
     public void setupRepository() throws Exception
@@ -93,7 +76,7 @@ public class GitScriptServiceTest
     }
     
     @Test
-    public void getGitRepositoryAndFindAuthors(String username, String accessCode) throws Exception
+    public void getRepositoryAndFindAuthors(String username, String accessCode) throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
         Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
@@ -110,5 +93,23 @@ public class GitScriptServiceTest
         Set<PersonIdent> authors = service.findAuthors(repository);
         Assert.assertEquals(1, authors.size());
         Assert.assertEquals("test author", authors.iterator().next().getName());
+    }
+    
+    @Test
+    public void getCountCommits(String username, String accessCode) throws Exception
+    {
+        GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
+        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
+                "test author", "TestAccessCode");
+        Assert.assertEquals(true, new Git(repository).pull().call().isSuccessful());
+
+        UserCommitActivity[] commits = service.countAuthorCommits(1, repository);
+        // 1 author
+        Assert.assertEquals(1, commits.length);
+        // 1 commit
+        Assert.assertEquals(1, commits[0].getCount());
+        // Verify user name and email
+        Assert.assertEquals("test author", commits[0].getName());
+        Assert.assertEquals("author@doe.com", commits[0].getEmail());
     }
 }
