@@ -74,7 +74,7 @@ public class GitScriptServiceTest
         gitHelper.add(testRepository, "test.txt", "test content", new PersonIdent("test author", "author@doe.com"),
             new PersonIdent("test committer", "committer@doe.com"), "first commit");
     }
-    
+
     @Test
     public void getRepositoryAndFindAuthors() throws Exception
     {
@@ -94,7 +94,7 @@ public class GitScriptServiceTest
         Assert.assertEquals(1, authors.size());
         Assert.assertEquals("test author", authors.iterator().next().getName());
     }
-    
+
     @Test
     public void getCountCommits() throws Exception
     {
