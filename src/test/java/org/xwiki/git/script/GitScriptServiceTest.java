@@ -76,7 +76,7 @@ public class GitScriptServiceTest
     }
     
     @Test
-    public void getRepositoryAndFindAuthors(String username, String accessCode) throws Exception
+    public void getRepositoryAndFindAuthors() throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
         Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
@@ -96,7 +96,7 @@ public class GitScriptServiceTest
     }
     
     @Test
-    public void getCountCommits(String username, String accessCode) throws Exception
+    public void getCountCommits() throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
         Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
