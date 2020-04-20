@@ -37,6 +37,8 @@ import org.xwiki.script.service.ScriptService;
 import org.xwiki.test.ComponentManagerRule;
 import org.xwiki.test.annotation.AllComponents;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Unit tests for {@link org.xwiki.git.script.GitScriptService}.
  *
@@ -81,18 +83,18 @@ public class GitScriptServiceTest
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
         Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
                 "test author", "TestAccessCode");
-        Assert.assertEquals(true, new Git(repository).pull().call().isSuccessful());
+        assertEquals(true, new Git(repository).pull().call().isSuccessful());
 
         CommitFinder finder = new CommitFinder(repository);
         CommitCountFilter count = new CommitCountFilter();
         finder.setFilter(count);
         finder.find();
 
-        Assert.assertEquals(1, count.getCount());
+        assertEquals(1, count.getCount());
 
         Set<PersonIdent> authors = service.findAuthors(repository);
-        Assert.assertEquals(1, authors.size());
-        Assert.assertEquals("test author", authors.iterator().next().getName());
+        assertEquals(1, authors.size());
+        assertEquals("test author", authors.iterator().next().getName());
     }
 
     @Test
@@ -101,15 +103,15 @@ public class GitScriptServiceTest
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
         Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
                 "test author", "TestAccessCode");
-        Assert.assertEquals(true, new Git(repository).pull().call().isSuccessful());
+        assertEquals(true, new Git(repository).pull().call().isSuccessful());
 
         UserCommitActivity[] commits = service.countAuthorCommits(1, repository);
         // 1 author
-        Assert.assertEquals(1, commits.length);
+        assertEquals(1, commits.length);
         // 1 commit
-        Assert.assertEquals(1, commits[0].getCount());
+        assertEquals(1, commits[0].getCount());
         // Verify user name and email
-        Assert.assertEquals("test author", commits[0].getName());
-        Assert.assertEquals("author@doe.com", commits[0].getEmail());
+        assertEquals("test author", commits[0].getName());
+        assertEquals("author@doe.com", commits[0].getEmail());
     }
 }

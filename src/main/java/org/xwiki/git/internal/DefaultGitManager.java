@@ -69,8 +69,14 @@ public class DefaultGitManager implements GitManager
     @Inject
     private Logger logger;
 
-    private Repository getGitRepository(String repositoryURI, String localDirectoryName, String username,
-        String accessCode)
+    @Override
+    public Repository getRepository(String repositoryURI, String localDirectoryName)
+    {
+        return getRepository(repositoryURI, localDirectoryName, null, null);
+    }
+
+    @Override
+    public Repository getRepository(String repositoryURI, String localDirectoryName, String username, String accessCode)
     {
         Repository repository;
 
@@ -81,49 +87,29 @@ public class DefaultGitManager implements GitManager
         this.logger.debug("Local Git repository is at [{}]", gitDirectory);
 
         // Initialize builder for the Git environment.
-        FileRepositoryBuilder builder = new FileRepositoryBuilder();
         try {
             // Step 1: Initialize Git environment.
-            repository = builder.setGitDir(gitDirectory)
-                    .readEnvironment()
-                    .findGitDir()
-                    .build();
+            repository = new FileRepositoryBuilder().setGitDir(gitDirectory)
+                .readEnvironment()
+                .findGitDir()
+                .build();
             Git git = new Git(repository);
 
             // Step 2: Verify if the directory exists and isn't empty.
             if (!gitDirectory.exists()) {
-                // Step 2.1: Clone the remote repository since it doesn't exist, initialize CloneCommand.
                 CloneCommand cloneCommand = git.cloneRepository();
-
-                // Step 2.2: Check if credentials are provided.
                 if (username != null && accessCode != null) {
-                    // Step 2.2.1: Credentials are provided hence set the credentials.
                     cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, accessCode));
                 }
-
-                // Step 2.3: Set the directory and URI, then call the command.
                 cloneCommand.setDirectory(localDirectory)
-                        .setURI(repositoryURI)
-                        .call();
+                    .setURI(repositoryURI)
+                    .call();
             }
         } catch (Exception e) {
             throw new RuntimeException(String.format("Failed to execute Git command in [%s]", gitDirectory), e);
         }
 
         return repository;
-    }
-
-    @Override
-    public Repository getRepository(String repositoryURI, String localDirectoryName)
-    {
-        return getGitRepository(repositoryURI, localDirectoryName, null, null);
-    }
-
-    @Override
-    public Repository getRepository(String repositoryURI, String localDirectoryName, String username,
-        String accessCode)
-    {
-        return getGitRepository(repositoryURI, localDirectoryName, username, accessCode);
     }
 
     @Override
