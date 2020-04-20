@@ -39,14 +39,14 @@ public class GitHelper
         this.environment = environment;
     }
 
-    public File getRepositoryFile(String repoName) throws Exception
+    public File getRepositoryFile(String repoName)
     {
         File localGitDirectory = new File(this.environment.getPermanentDirectory(), "git");
         File localDirectory = new File(localGitDirectory, repoName);
         return localDirectory;
     }
 
-    public boolean exists(String repoName) throws Exception
+    public boolean exists(String repoName)
     {
         return getRepositoryFile(repoName).exists();
     }

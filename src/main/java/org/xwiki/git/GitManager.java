@@ -56,13 +56,13 @@ public interface GitManager
      * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
      * @param localDirectoryName the name of the directory where the Git repository will be cloned (this directory is
      *        relative to the permanent directory
-     * @param username the username of Git user
-     * @param accessCode the password or OAuth or personal access token that authenticates with the git user id.
+     * @param username the username of the Git user
+     * @param accessCode the password or OAuth or personal access token that authenticates with the Git user
      * @return the cloned Repository instance
-     * @since 9.8
+     * @since 9.9
      */
     @Unstable
-    default Repository getPrivateRepository(String repositoryURI, String localDirectoryName, String username,
+    default Repository getRepository(String repositoryURI, String localDirectoryName, String username,
         String accessCode)
     {
         throw new UnsupportedOperationException();

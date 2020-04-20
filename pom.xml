@@ -33,7 +33,7 @@
   <packaging>jar</packaging>
   <description>Make it easy to run Git commands in Java and from wiki pages</description>
   <properties>
-    <xwiki.jacoco.instructionRatio>0.87</xwiki.jacoco.instructionRatio>
+    <xwiki.jacoco.instructionRatio>0.91</xwiki.jacoco.instructionRatio>
     <!-- Old names of this module used for retro compatibility when resolving dependencies of old extensions -->
     <xwiki.extension.features>vincentmassol:git-module,org.xwiki.platform:xwiki-platform-git</xwiki.extension.features>
     <xwiki.issueManagement.jira.id>GIT</xwiki.issueManagement.jira.id>
@@ -76,6 +76,12 @@
       <artifactId>joda-time</artifactId>
     </dependency>
     <!-- Test Dependencies -->
+    <dependency>
+      <groupId>org.eclipse.jgit</groupId>
+      <artifactId>org.eclipse.jgit.junit.http</artifactId>
+      <version>5.0.3.201809091024-r</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
