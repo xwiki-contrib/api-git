@@ -69,14 +69,8 @@ public class DefaultGitManager implements GitManager
     @Inject
     private Logger logger;
 
-    @Override
-    public Repository getRepository(String repositoryURI, String localDirectoryName)
-    {
-        return getRepository(repositoryURI, localDirectoryName, null, null);
-    }
-
-    @Override
-    public Repository getRepository(String repositoryURI, String localDirectoryName, String username, String accessCode)
+    private Repository getGitRepository(String repositoryURI, String localDirectoryName, String username,
+        String accessCode, boolean useBare)
     {
         Repository repository;
 
@@ -97,19 +91,41 @@ public class DefaultGitManager implements GitManager
 
             // Step 2: Verify if the directory exists and isn't empty.
             if (!gitDirectory.exists()) {
-                CloneCommand cloneCommand = git.cloneRepository();
+                CloneCommand cloneCommand = Git.cloneRepository();
+                // Bare becomes true if useBare is received true, otherwise false.
+                cloneCommand.setBare(useBare);
                 if (username != null && accessCode != null) {
                     cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, accessCode));
                 }
-                cloneCommand.setDirectory(localDirectory)
+                git = cloneCommand.setDirectory(localDirectory)
                     .setURI(repositoryURI)
                     .call();
+                repository = git.getRepository();
             }
         } catch (Exception e) {
             throw new RuntimeException(String.format("Failed to execute Git command in [%s]", gitDirectory), e);
         }
 
         return repository;
+    }
+
+    @Override
+    public Repository getRepository(String repositoryURI, String localDirectoryName)
+    {
+        return getGitRepository(repositoryURI, localDirectoryName, null, null, false);
+    }
+
+    @Override
+    public Repository getRepository(String repositoryURI, String localDirectoryName, String username, String accessCode)
+    {
+        return getGitRepository(repositoryURI, localDirectoryName, username, accessCode, false);
+    }
+
+    @Override
+    public Repository getRepositoryBare(String repositoryURI, String localDirectoryName, String username,
+        String accessCode)
+    {
+        return getGitRepository(repositoryURI, localDirectoryName, username, accessCode, true);
     }
 
     @Override
