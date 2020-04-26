@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
 import org.gitective.core.CommitFinder;
@@ -38,6 +39,8 @@ import org.xwiki.test.ComponentManagerRule;
 import org.xwiki.test.annotation.AllComponents;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 /**
  * Unit tests for {@link org.xwiki.git.script.GitScriptService}.
@@ -113,5 +116,36 @@ public class GitScriptServiceTest
         // Verify user name and email
         assertEquals("test author", commits[0].getName());
         assertEquals("author@doe.com", commits[0].getEmail());
+    }
+
+    @Test
+    public void getRepositoryBareAndCountCommits() throws Exception
+    {
+        GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
+        Repository repository = service.getRepositoryBare(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED);
+        try {
+            assertNull(repository.getWorkTree());
+            fail("Expected NoWorkTreeException");
+        } catch (NoWorkTreeException e) {
+            UserCommitActivity[] commits = service.countAuthorCommits(1, repository);
+            assertEquals(1, commits.length);
+            assertEquals(1, commits[0].getCount());
+        }
+    }
+
+    @Test
+    public void getRepositoryBareWithCredentialsAndFindAuthors() throws Exception
+    {
+        GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
+        Repository repository = service.getRepositoryBare(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
+            "test author", "TestAccessCode");
+        try {
+            assertNull(repository.getWorkTree());
+            fail("Expected NoWorkTreeException");
+        } catch (NoWorkTreeException e) {
+            Set<PersonIdent> authors = service.findAuthors(repository);
+            assertEquals(1, authors.size());
+            assertEquals("test author", authors.iterator().next().getName());
+        }
     }
 }
