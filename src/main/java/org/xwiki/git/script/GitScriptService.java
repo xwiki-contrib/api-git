@@ -100,6 +100,41 @@ public class GitScriptService implements ScriptService
     }
 
     /**
+     * Clone a Git repository as Bare by storing it locally in the XWiki Permanent directory. If the repository is
+     * already cloned, no action is done.
+     *
+     * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
+     * @param localDirectoryName the name of the directory where the Git repository will be cloned (this directory is
+     *        relative to the permanent directory
+     * @return the cloned Repository instance
+     * @since 9.10
+     */
+    @Unstable
+    public Repository getRepositoryBare(String repositoryURI, String localDirectoryName)
+    {
+        return this.gitManager.getRepositoryBare(repositoryURI, localDirectoryName, null, null);
+    }
+
+    /**
+     * Clone a private Git repository as Bare using the credentials provided by user and store it locally in the
+     * XWiki Permanent directory. If the repository is already cloned, no action is done.
+     *
+     * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
+     * @param localDirectoryName the name of the directory where the Git repository will be cloned (this directory is
+     *        relative to the permanent directory
+     * @param username the username of the Git user
+     * @param accessCode the password or OAuth or personal access token that authenticates with the Git user
+     * @return the cloned Repository instance
+     * @since 9.10
+     */
+    @Unstable
+    public Repository getRepositoryBare(String repositoryURI, String localDirectoryName, String username,
+        String accessCode)
+    {
+        return this.gitManager.getRepositoryBare(repositoryURI, localDirectoryName, username, accessCode);
+    }
+
+    /**
      * Find all authors who have ever committed code in the passed repository.
      *
      * @param repositories the list of repositories in which to look for authors
