@@ -69,6 +69,25 @@ public interface GitManager
     }
 
     /**
+     * Clone a private Git repository as Bare using the credentials provided by user and store it locally in the
+     * XWiki Permanent directory. If the repository is already cloned, no action is done.
+     *
+     * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
+     * @param localDirectoryName the name of the directory where the Git repository will be cloned (this directory is
+     *        relative to the permanent directory
+     * @param username the username of the Git user
+     * @param accessCode the password or OAuth or personal access token that authenticates with the Git user
+     * @return the cloned Repository instance
+     * @since 9.10
+     */
+    @Unstable
+    default Repository getRepositoryBare(String repositoryURI, String localDirectoryName, String username,
+        String accessCode)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Find all authors who have ever committed code in the passed repositories.
      *
      * @param repositories the list of repositories in which to look for authors
