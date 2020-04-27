@@ -28,8 +28,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.gitective.core.stat.UserCommitActivity;
 import org.joda.time.DateTime;
 import org.xwiki.component.annotation.Component;
@@ -112,7 +115,8 @@ public class GitScriptService implements ScriptService
     @Unstable
     public Repository getRepositoryBare(String repositoryURI, String localDirectoryName)
     {
-        return this.gitManager.getRepositoryBare(repositoryURI, localDirectoryName, null, null);
+        CloneCommand cloneCommand = Git.cloneRepository();
+        return this.gitManager.getRepositoryBare(repositoryURI, localDirectoryName, cloneCommand);
     }
 
     /**
@@ -131,7 +135,9 @@ public class GitScriptService implements ScriptService
     public Repository getRepositoryBare(String repositoryURI, String localDirectoryName, String username,
         String accessCode)
     {
-        return this.gitManager.getRepositoryBare(repositoryURI, localDirectoryName, username, accessCode);
+        CloneCommand cloneCommand = Git.cloneRepository();
+        cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, accessCode));
+        return this.gitManager.getRepositoryBare(repositoryURI, localDirectoryName, cloneCommand);
     }
 
     /**
