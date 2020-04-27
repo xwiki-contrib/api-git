@@ -26,20 +26,22 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jgit.errors.NoWorkTreeException;
+import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.junit.TestRepository;
 import org.eclipse.jgit.junit.http.AppServer;
 import org.eclipse.jgit.junit.http.HttpTestCase;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.xwiki.test.mockito.MockitoComponentMockingRule;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -112,20 +114,17 @@ public class DefaultGitManagerTest extends HttpTestCase
     }
 
     @Test
-    public void getRepositoryBareWithCredentials() throws Exception
+    public void getRepositoryBareAndCheckBare() throws Exception
     {
         String repositoryURI = this.serverURI.toASCIIString();
         String localPath = this.tmpFolder.newFolder("getRepositoryBareWithCredentials").toString();
+        CloneCommand cloneCommand = Git.cloneRepository();
+        cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(AppServer.username,
+            AppServer.password));
         Repository repository = this.mocker.getComponentUnderTest().getRepositoryBare(repositoryURI, localPath,
-            AppServer.username, AppServer.password);
+            cloneCommand);
         assertNotNull(repository);
-
-        try {
-            assertNull(repository.getWorkTree());
-            fail("Expected NoWorkTreeException");
-        } catch (NoWorkTreeException expected) {
-            assertTrue(ExceptionUtils.getRootCauseMessage(expected).matches("NoWorkTreeException: .*"));
-        }
+        assertEquals(true, repository.isBare());
     }
 
     /**
