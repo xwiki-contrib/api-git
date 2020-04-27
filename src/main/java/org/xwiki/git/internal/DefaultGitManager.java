@@ -69,8 +69,7 @@ public class DefaultGitManager implements GitManager
     @Inject
     private Logger logger;
 
-    private Repository getGitRepository(String repositoryURI, String localDirectoryName, String username,
-        String accessCode, boolean useBare)
+    private Repository getGitRepository(String repositoryURI, String localDirectoryName, CloneCommand cloneCommand)
     {
         Repository repository;
 
@@ -87,17 +86,10 @@ public class DefaultGitManager implements GitManager
                 .readEnvironment()
                 .findGitDir()
                 .build();
-            Git git = new Git(repository);
 
             // Step 2: Verify if the directory exists and isn't empty.
             if (!gitDirectory.exists()) {
-                CloneCommand cloneCommand = Git.cloneRepository();
-                // Bare becomes true if useBare is received true, otherwise false.
-                cloneCommand.setBare(useBare);
-                if (username != null && accessCode != null) {
-                    cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, accessCode));
-                }
-                git = cloneCommand.setDirectory(localDirectory)
+                Git git = cloneCommand.setDirectory(localDirectory)
                     .setURI(repositoryURI)
                     .call();
                 repository = git.getRepository();
@@ -112,20 +104,29 @@ public class DefaultGitManager implements GitManager
     @Override
     public Repository getRepository(String repositoryURI, String localDirectoryName)
     {
-        return getGitRepository(repositoryURI, localDirectoryName, null, null, false);
+        // Simple CloneCommand with default settings
+        CloneCommand cloneCommand = Git.cloneRepository();
+        return getGitRepository(repositoryURI, localDirectoryName, cloneCommand);
     }
 
     @Override
     public Repository getRepository(String repositoryURI, String localDirectoryName, String username, String accessCode)
     {
-        return getGitRepository(repositoryURI, localDirectoryName, username, accessCode, false);
+        // CloneCommand with basic authentication
+        CloneCommand cloneCommand = Git.cloneRepository();
+        cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, accessCode));
+        return getGitRepository(repositoryURI, localDirectoryName, cloneCommand);
     }
 
     @Override
-    public Repository getRepositoryBare(String repositoryURI, String localDirectoryName, String username,
-        String accessCode)
+    public Repository getRepositoryBare(String repositoryURI, String localDirectoryName, CloneCommand cloneCommand)
     {
-        return getGitRepository(repositoryURI, localDirectoryName, username, accessCode, true);
+        if (cloneCommand == null) {
+            cloneCommand = Git.cloneRepository();
+        }
+        // CloneCommand with bare settings
+        cloneCommand.setBare(true);
+        return getGitRepository(repositoryURI, localDirectoryName, cloneCommand);
     }
 
     @Override
