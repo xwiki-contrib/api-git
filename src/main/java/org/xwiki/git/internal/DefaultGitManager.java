@@ -121,9 +121,6 @@ public class DefaultGitManager implements GitManager
     @Override
     public Repository getRepositoryBare(String repositoryURI, String localDirectoryName, CloneCommand cloneCommand)
     {
-        if (cloneCommand == null) {
-            cloneCommand = Git.cloneRepository();
-        }
         // CloneCommand with bare settings
         cloneCommand.setBare(true);
         return getGitRepository(repositoryURI, localDirectoryName, cloneCommand);
