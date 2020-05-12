@@ -23,7 +23,9 @@ import java.io.File;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
 import org.gitective.core.stat.UserCommitActivity;
@@ -88,7 +90,7 @@ public class GitScriptServiceTest
     }
 
     @Test
-    public void getRepositoryAndCountCommits() throws Exception
+    public void getRepositoryWithCredentialsAndCountCommits() throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
         Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
@@ -103,11 +105,13 @@ public class GitScriptServiceTest
     }
 
     @Test
-    public void getRepositoryBareAndCheckBranch() throws Exception
+    public void getRepositoryBare() throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
-        Repository repository = service.getRepositoryBare(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
-            "test author", "TestAccessCode");
+        CloneCommand cloneCommand = service.createCloneCommand();
+        cloneCommand.setBare(true);
+        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
+            cloneCommand);
         assertEquals(true, repository.isBare());
         // Now check branch
         assertEquals("master", repository.getBranch());
