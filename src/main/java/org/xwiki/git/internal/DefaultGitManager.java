@@ -69,7 +69,8 @@ public class DefaultGitManager implements GitManager
     @Inject
     private Logger logger;
 
-    private Repository getGitRepository(String repositoryURI, String localDirectoryName, CloneCommand cloneCommand)
+    @Override
+    public Repository getRepository(String repositoryURI, String localDirectoryName, CloneCommand cloneCommand)
     {
         Repository repository;
 
@@ -106,7 +107,7 @@ public class DefaultGitManager implements GitManager
     {
         // Simple CloneCommand with default settings
         CloneCommand cloneCommand = Git.cloneRepository();
-        return getGitRepository(repositoryURI, localDirectoryName, cloneCommand);
+        return getRepository(repositoryURI, localDirectoryName, cloneCommand);
     }
 
     @Override
@@ -115,15 +116,7 @@ public class DefaultGitManager implements GitManager
         // CloneCommand with basic authentication
         CloneCommand cloneCommand = Git.cloneRepository();
         cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, accessCode));
-        return getGitRepository(repositoryURI, localDirectoryName, cloneCommand);
-    }
-
-    @Override
-    public Repository getRepositoryBare(String repositoryURI, String localDirectoryName, CloneCommand cloneCommand)
-    {
-        // CloneCommand with bare settings
-        cloneCommand.setBare(true);
-        return getGitRepository(repositoryURI, localDirectoryName, cloneCommand);
+        return getRepository(repositoryURI, localDirectoryName, cloneCommand);
     }
 
     @Override
