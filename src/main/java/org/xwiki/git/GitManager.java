@@ -76,12 +76,12 @@ public interface GitManager
      * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
      * @param localDirectoryName the name of the directory where the Git repository will be cloned (this directory is
      *        relative to the permanent directory
-     * @param cloneCommand the clone settings used as CloneCommand object
+     * @param cloneCommand the CloneCommand used for clone options
      * @return the cloned Repository instance
      * @since 9.10
      */
     @Unstable
-    default Repository getRepositoryBare(String repositoryURI, String localDirectoryName, CloneCommand cloneCommand)
+    default Repository getRepository(String repositoryURI, String localDirectoryName, CloneCommand cloneCommand)
     {
         throw new UnsupportedOperationException();
     }
