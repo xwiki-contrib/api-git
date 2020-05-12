@@ -114,14 +114,15 @@ public class DefaultGitManagerTest extends HttpTestCase
     }
 
     @Test
-    public void getRepositoryBareAndCheckBare() throws Exception
+    public void getRepositoryBare() throws Exception
     {
         String repositoryURI = this.serverURI.toASCIIString();
         String localPath = this.tmpFolder.newFolder("getRepositoryBareWithCredentials").toString();
         CloneCommand cloneCommand = Git.cloneRepository();
         cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(AppServer.username,
             AppServer.password));
-        Repository repository = this.mocker.getComponentUnderTest().getRepositoryBare(repositoryURI, localPath,
+        cloneCommand.setBare(true);
+        Repository repository = this.mocker.getComponentUnderTest().getRepository(repositoryURI, localPath,
             cloneCommand);
         assertNotNull(repository);
         assertEquals(true, repository.isBare());
