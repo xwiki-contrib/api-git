@@ -32,7 +32,6 @@ import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.gitective.core.stat.UserCommitActivity;
 import org.joda.time.DateTime;
 import org.xwiki.component.annotation.Component;
@@ -84,7 +83,7 @@ public class GitScriptService implements ScriptService
     }
 
     /**
-     * Clone a Private Git repository using the credentials provided by user and store it locally in the
+     * Clone a protected Git repository by using the credentials provided by user and store it locally in the
      * XWiki Permanent directory. If the repository is already cloned, no action is done.
      *
      * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
@@ -103,41 +102,32 @@ public class GitScriptService implements ScriptService
     }
 
     /**
-     * Clone a Git repository as Bare by storing it locally in the XWiki Permanent directory. If the repository is
-     * already cloned, no action is done.
-     *
-     * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
-     * @param localDirectoryName the name of the directory where the Git repository will be cloned (this directory is
-     *        relative to the permanent directory
-     * @return the cloned Repository instance
-     * @since 9.10
-     */
-    @Unstable
-    public Repository getRepositoryBare(String repositoryURI, String localDirectoryName)
-    {
-        CloneCommand cloneCommand = Git.cloneRepository();
-        return this.gitManager.getRepositoryBare(repositoryURI, localDirectoryName, cloneCommand);
-    }
-
-    /**
-     * Clone a private Git repository as Bare using the credentials provided by user and store it locally in the
+     * Clone a protected Git repository by using the credentials provided by user and store it locally in the
      * XWiki Permanent directory. If the repository is already cloned, no action is done.
      *
      * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
      * @param localDirectoryName the name of the directory where the Git repository will be cloned (this directory is
      *        relative to the permanent directory
-     * @param username the username of the Git user
-     * @param accessCode the password or OAuth or personal access token that authenticates with the Git user
+     * @param cloneCommand the CloneCommand used for clone options
      * @return the cloned Repository instance
+     * @since 9.9
+     */
+    @Unstable
+    public Repository getRepository(String repositoryURI, String localDirectoryName, CloneCommand cloneCommand)
+    {
+        return this.gitManager.getRepository(repositoryURI, localDirectoryName, cloneCommand);
+    }
+
+    /**
+     * Create a CloneCommand object for custom clone options.
+     *
+     * @return the CloneCommand instance
      * @since 9.10
      */
     @Unstable
-    public Repository getRepositoryBare(String repositoryURI, String localDirectoryName, String username,
-        String accessCode)
+    public CloneCommand createCloneCommand()
     {
-        CloneCommand cloneCommand = Git.cloneRepository();
-        cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, accessCode));
-        return this.gitManager.getRepositoryBare(repositoryURI, localDirectoryName, cloneCommand);
+        return Git.cloneRepository();
     }
 
     /**
