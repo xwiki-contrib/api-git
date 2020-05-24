@@ -28,6 +28,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
 import org.gitective.core.stat.UserCommitActivity;
@@ -81,7 +83,7 @@ public class GitScriptService implements ScriptService
     }
 
     /**
-     * Clone a Private Git repository using the credentials provided by user and store it locally in the
+     * Clone a protected Git repository by using the credentials provided by user and store it locally in the
      * XWiki Permanent directory. If the repository is already cloned, no action is done.
      *
      * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
@@ -97,6 +99,35 @@ public class GitScriptService implements ScriptService
         String accessCode)
     {
         return this.gitManager.getRepository(repositoryURI, localDirectoryName, username, accessCode);
+    }
+
+    /**
+     * Clone a protected Git repository by using the credentials provided by user and store it locally in the
+     * XWiki Permanent directory. If the repository is already cloned, no action is done.
+     *
+     * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
+     * @param localDirectoryName the name of the directory where the Git repository will be cloned (this directory is
+     *        relative to the permanent directory
+     * @param cloneCommand the CloneCommand used for clone options
+     * @return the cloned Repository instance
+     * @since 9.9
+     */
+    @Unstable
+    public Repository getRepository(String repositoryURI, String localDirectoryName, CloneCommand cloneCommand)
+    {
+        return this.gitManager.getRepository(repositoryURI, localDirectoryName, cloneCommand);
+    }
+
+    /**
+     * Create a CloneCommand object for custom clone options.
+     *
+     * @return the CloneCommand instance
+     * @since 9.10
+     */
+    @Unstable
+    public CloneCommand createCloneCommand()
+    {
+        return Git.cloneRepository();
     }
 
     /**

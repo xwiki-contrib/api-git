@@ -26,17 +26,21 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.junit.TestRepository;
 import org.eclipse.jgit.junit.http.AppServer;
 import org.eclipse.jgit.junit.http.HttpTestCase;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.xwiki.test.mockito.MockitoComponentMockingRule;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -107,6 +111,21 @@ public class DefaultGitManagerTest extends HttpTestCase
         } catch (Exception expected) {
             assertTrue(ExceptionUtils.getRootCauseMessage(expected).matches("TransportException: .*: not authorized"));
         }
+    }
+
+    @Test
+    public void getRepositoryBare() throws Exception
+    {
+        String repositoryURI = this.serverURI.toASCIIString();
+        String localPath = this.tmpFolder.newFolder("getRepositoryBareWithCredentials").toString();
+        CloneCommand cloneCommand = Git.cloneRepository();
+        cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(AppServer.username,
+            AppServer.password));
+        cloneCommand.setBare(true);
+        Repository repository = this.mocker.getComponentUnderTest().getRepository(repositoryURI, localPath,
+            cloneCommand);
+        assertNotNull(repository);
+        assertEquals(true, repository.isBare());
     }
 
     /**

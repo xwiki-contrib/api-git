@@ -23,11 +23,11 @@ import java.io.File;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
-import org.gitective.core.CommitFinder;
-import org.gitective.core.filter.commit.CommitCountFilter;
 import org.gitective.core.stat.UserCommitActivity;
 import org.junit.*;
 import org.xwiki.environment.Environment;
@@ -81,37 +81,39 @@ public class GitScriptServiceTest
     public void getRepositoryAndFindAuthors() throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
-        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
-                "test author", "TestAccessCode");
+        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED);
         assertEquals(true, new Git(repository).pull().call().isSuccessful());
-
-        CommitFinder finder = new CommitFinder(repository);
-        CommitCountFilter count = new CommitCountFilter();
-        finder.setFilter(count);
-        finder.find();
-
-        assertEquals(1, count.getCount());
-
+        // Now find authors
         Set<PersonIdent> authors = service.findAuthors(repository);
         assertEquals(1, authors.size());
         assertEquals("test author", authors.iterator().next().getName());
     }
 
     @Test
-    public void getCountCommits() throws Exception
+    public void getRepositoryWithCredentialsAndCountCommits() throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
         Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
-                "test author", "TestAccessCode");
+            "test author", "TestAccessCode");
         assertEquals(true, new Git(repository).pull().call().isSuccessful());
-
+        // Now count commits
         UserCommitActivity[] commits = service.countAuthorCommits(1, repository);
         // 1 author
         assertEquals(1, commits.length);
         // 1 commit
         assertEquals(1, commits[0].getCount());
-        // Verify user name and email
-        assertEquals("test author", commits[0].getName());
-        assertEquals("author@doe.com", commits[0].getEmail());
+    }
+
+    @Test
+    public void getRepositoryBare() throws Exception
+    {
+        GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
+        CloneCommand cloneCommand = service.createCloneCommand();
+        cloneCommand.setBare(true);
+        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
+            cloneCommand);
+        assertEquals(true, repository.isBare());
+        // Now check branch
+        assertEquals("master", repository.getBranch());
     }
 }

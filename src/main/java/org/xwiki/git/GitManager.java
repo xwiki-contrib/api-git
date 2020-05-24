@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
 import org.gitective.core.stat.UserCommitActivity;
@@ -64,6 +65,23 @@ public interface GitManager
     @Unstable
     default Repository getRepository(String repositoryURI, String localDirectoryName, String username,
         String accessCode)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Clone a Git repository as Bare using the CloneCommand provided by user and store it locally in the
+     * XWiki Permanent directory. If the repository is already cloned, no action is done.
+     *
+     * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
+     * @param localDirectoryName the name of the directory where the Git repository will be cloned (this directory is
+     *        relative to the permanent directory
+     * @param cloneCommand the CloneCommand used for clone options
+     * @return the cloned Repository instance
+     * @since 9.10
+     */
+    @Unstable
+    default Repository getRepository(String repositoryURI, String localDirectoryName, CloneCommand cloneCommand)
     {
         throw new UnsupportedOperationException();
     }
