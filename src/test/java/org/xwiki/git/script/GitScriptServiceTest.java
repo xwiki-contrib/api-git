@@ -30,6 +30,7 @@ import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
 import org.gitective.core.stat.UserCommitActivity;
 import org.junit.*;
+import org.junit.rules.TemporaryFolder;
 import org.xwiki.environment.Environment;
 import org.xwiki.environment.internal.StandardEnvironment;
 import org.xwiki.git.GitHelper;
@@ -54,6 +55,8 @@ public class GitScriptServiceTest
 
     @Rule
     public ComponentManagerRule componentManager = new ComponentManagerRule();
+    @Rule
+    public TemporaryFolder tmpFolder = new TemporaryFolder();
 
     private File testRepository;
 
@@ -81,7 +84,8 @@ public class GitScriptServiceTest
     public void getRepositoryAndFindAuthors() throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
-        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED);
+        String localPath = this.tmpFolder.newFolder(TEST_REPO_CLONED).toString();
+        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), localPath);
         assertEquals(true, new Git(repository).pull().call().isSuccessful());
         // Now find authors
         Set<PersonIdent> authors = service.findAuthors(repository);
@@ -93,7 +97,8 @@ public class GitScriptServiceTest
     public void getRepositoryWithCredentialsAndCountCommits() throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
-        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
+        String localPath = this.tmpFolder.newFolder(TEST_REPO_CLONED).toString();
+        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), localPath,
             "test author", "TestAccessCode");
         assertEquals(true, new Git(repository).pull().call().isSuccessful());
         // Now count commits
@@ -110,7 +115,8 @@ public class GitScriptServiceTest
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
         CloneCommand cloneCommand = service.createCloneCommand();
         cloneCommand.setBare(true);
-        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
+        String localPath = this.tmpFolder.newFolder(TEST_REPO_CLONED).toString();
+        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), localPath,
             cloneCommand);
         assertEquals(true, repository.isBare());
         // Now check branch

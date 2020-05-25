@@ -102,7 +102,7 @@ public class GitScriptService implements ScriptService
     }
 
     /**
-     * Clone a protected Git repository by using the credentials provided by user and store it locally in the
+     * Clone a Git repository using the CloneCommand provided by user and store it locally in the
      * XWiki Permanent directory. If the repository is already cloned, no action is done.
      *
      * @param repositoryURI the URI to the Git repository to clone (eg "git://github.com/xwiki/xwiki-commons.git")
@@ -110,7 +110,7 @@ public class GitScriptService implements ScriptService
      *        relative to the permanent directory
      * @param cloneCommand the CloneCommand used for clone options
      * @return the cloned Repository instance
-     * @since 9.9
+     * @since 9.10
      */
     @Unstable
     public Repository getRepository(String repositoryURI, String localDirectoryName, CloneCommand cloneCommand)
