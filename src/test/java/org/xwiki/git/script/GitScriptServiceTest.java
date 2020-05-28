@@ -25,12 +25,10 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
 import org.gitective.core.stat.UserCommitActivity;
 import org.junit.*;
-import org.junit.rules.TemporaryFolder;
 import org.xwiki.environment.Environment;
 import org.xwiki.environment.internal.StandardEnvironment;
 import org.xwiki.git.GitHelper;
@@ -55,8 +53,6 @@ public class GitScriptServiceTest
 
     @Rule
     public ComponentManagerRule componentManager = new ComponentManagerRule();
-    @Rule
-    public TemporaryFolder tmpFolder = new TemporaryFolder();
 
     private File testRepository;
 
@@ -84,8 +80,7 @@ public class GitScriptServiceTest
     public void getRepositoryAndFindAuthors() throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
-        String localPath = this.tmpFolder.newFolder(TEST_REPO_CLONED).toString();
-        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), localPath);
+        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED);
         assertEquals(true, new Git(repository).pull().call().isSuccessful());
         // Now find authors
         Set<PersonIdent> authors = service.findAuthors(repository);
@@ -97,8 +92,7 @@ public class GitScriptServiceTest
     public void getRepositoryWithCredentialsAndCountCommits() throws Exception
     {
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
-        String localPath = this.tmpFolder.newFolder(TEST_REPO_CLONED).toString();
-        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), localPath,
+        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
             "test author", "TestAccessCode");
         assertEquals(true, new Git(repository).pull().call().isSuccessful());
         // Now count commits
@@ -115,8 +109,7 @@ public class GitScriptServiceTest
         GitScriptService service = this.componentManager.getInstance(ScriptService.class, "git");
         CloneCommand cloneCommand = service.createCloneCommand();
         cloneCommand.setBare(true);
-        String localPath = this.tmpFolder.newFolder(TEST_REPO_CLONED).toString();
-        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), localPath,
+        Repository repository = service.getRepository(this.testRepository.getAbsolutePath(), TEST_REPO_CLONED,
             cloneCommand);
         assertEquals(true, repository.isBare());
         // Now check branch

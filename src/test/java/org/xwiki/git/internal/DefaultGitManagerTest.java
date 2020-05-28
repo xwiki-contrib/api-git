@@ -38,6 +38,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.xwiki.environment.Environment;
+import org.xwiki.environment.internal.StandardEnvironment;
+import org.xwiki.test.annotation.AllComponents;
 import org.xwiki.test.mockito.MockitoComponentMockingRule;
 
 import static org.junit.Assert.assertEquals;
@@ -51,6 +54,7 @@ import static org.junit.Assert.fail;
  * @version $Id$
  * @since 9.9
  */
+@AllComponents
 public class DefaultGitManagerTest extends HttpTestCase
 {
     @Rule
@@ -68,6 +72,10 @@ public class DefaultGitManagerTest extends HttpTestCase
     public void setUp() throws Exception
     {
         super.setUp();
+
+        // Configure permanent directory to be the temporary directory
+        StandardEnvironment environment = this.mocker.getInstance(Environment.class);
+        environment.setPermanentDirectory(environment.getTemporaryDirectory());
 
         // Create a repository on the server.
         this.remoteRepository = createTestRepository();
