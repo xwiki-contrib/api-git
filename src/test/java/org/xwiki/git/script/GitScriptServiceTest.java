@@ -30,13 +30,14 @@ import org.eclipse.jgit.lib.Repository;
 import org.gitective.core.stat.UserCommitActivity;
 import org.junit.*;
 import org.xwiki.environment.Environment;
-import org.xwiki.environment.internal.StandardEnvironment;
 import org.xwiki.git.GitHelper;
+import org.xwiki.git.internal.DefaultGitManager;
 import org.xwiki.script.service.ScriptService;
-import org.xwiki.test.ComponentManagerRule;
-import org.xwiki.test.annotation.AllComponents;
+import org.xwiki.test.annotation.ComponentList;
+import org.xwiki.test.mockito.MockitoComponentManagerRule;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link org.xwiki.git.script.GitScriptService}.
@@ -44,7 +45,10 @@ import static org.junit.Assert.assertEquals;
  * @version $Id$
  * @since 4.2M1
  */
-@AllComponents
+@ComponentList({
+    DefaultGitManager.class,
+    GitScriptService.class
+})
 public class GitScriptServiceTest
 {
     private static final String TEST_REPO_ORIG = "test-repo-orig";
@@ -52,16 +56,16 @@ public class GitScriptServiceTest
     private static final String TEST_REPO_CLONED = "test-repo-cloned";
 
     @Rule
-    public ComponentManagerRule componentManager = new ComponentManagerRule();
+    public MockitoComponentManagerRule componentManager = new MockitoComponentManagerRule();
 
     private File testRepository;
 
     @Before
     public void setupRepository() throws Exception
     {
-        // Configure permanent directory to be the temporary directory
-        StandardEnvironment environment = this.componentManager.getInstance(Environment.class);
-        environment.setPermanentDirectory(environment.getTemporaryDirectory());
+        // Configure permanent directory to point to somewhere in target/
+        Environment environment = this.componentManager.registerMockComponent(Environment.class);
+        when(environment.getPermanentDirectory()).thenReturn(GitHelper.createTemporaryDirectory());
         GitHelper gitHelper = new GitHelper(environment);
 
         // Delete repositories
