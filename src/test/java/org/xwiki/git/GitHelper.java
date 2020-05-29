@@ -21,6 +21,7 @@ package org.xwiki.git;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Date;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.PersonIdent;
@@ -90,4 +91,16 @@ public class GitHelper
             .call();
         Assert.assertNotNull(commit);
     }
+
+    /**
+     * TODO: Remove once we upgrade the parent pom to a more recent version of XWiki. Once we move to JUni5 we have an
+     * {@code @XWikiTempDir} annotation.
+     */
+    public static File createTemporaryDirectory()
+    {
+        File tmpDir = new File("target/test-" + new Date().getTime()).getAbsoluteFile();
+        tmpDir.mkdirs();
+        return tmpDir;
+    }
+
 }

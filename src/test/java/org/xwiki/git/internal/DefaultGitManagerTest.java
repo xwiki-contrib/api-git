@@ -37,13 +37,15 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.xwiki.environment.Environment;
+import org.xwiki.git.GitHelper;
 import org.xwiki.test.mockito.MockitoComponentMockingRule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link DefaultGitManager}
@@ -57,9 +59,6 @@ public class DefaultGitManagerTest extends HttpTestCase
     public MockitoComponentMockingRule<DefaultGitManager> mocker =
         new MockitoComponentMockingRule<>(DefaultGitManager.class);
 
-    @Rule
-    public TemporaryFolder tmpFolder = new TemporaryFolder();
-
     private TestRepository<Repository> remoteRepository;
 
     private URIish serverURI;
@@ -68,6 +67,10 @@ public class DefaultGitManagerTest extends HttpTestCase
     public void setUp() throws Exception
     {
         super.setUp();
+
+        // Configure permanent directory to point to somewhere in target/
+        Environment environment = this.mocker.registerMockComponent(Environment.class);
+        when(environment.getPermanentDirectory()).thenReturn(GitHelper.createTemporaryDirectory());
 
         // Create a repository on the server.
         this.remoteRepository = createTestRepository();
@@ -92,21 +95,18 @@ public class DefaultGitManagerTest extends HttpTestCase
     public void getRepositoryWhenCredentialsProvided() throws Exception
     {
         String repositoryURI = this.serverURI.toASCIIString();
-        String localPath = this.tmpFolder.newFolder("getRepositoryWhenCredentialsProvided").toString();
-        Repository repository = this.mocker.getComponentUnderTest().getRepository(repositoryURI, localPath,
-            AppServer.username, AppServer.password);
+        Repository repository = this.mocker.getComponentUnderTest().getRepository(repositoryURI,
+            "getRepositoryWhenCredentialsProvided", AppServer.username, AppServer.password);
         assertNotNull(repository);
     }
 
     @Test
-    public void getRepositoryWhenWrongCredentialsProvided() throws Exception
+    public void getRepositoryWhenWrongCredentialsProvided()
     {
         String repositoryURI = this.serverURI.toASCIIString();
-        String localPath = this.tmpFolder.newFolder("getRepositoryWhenWrongCredentialsProvided").toString();
-
         try {
-            this.mocker.getComponentUnderTest().getRepository(repositoryURI, localPath, "invalidusername",
-                "invalidpassword");
+            this.mocker.getComponentUnderTest().getRepository(repositoryURI,
+                "getRepositoryWhenWrongCredentialsProvided", "invalidusername", "invalidpassword");
             fail("An exception should have been thrown");
         } catch (Exception expected) {
             assertTrue(ExceptionUtils.getRootCauseMessage(expected).matches("TransportException: .*: not authorized"));
@@ -117,13 +117,12 @@ public class DefaultGitManagerTest extends HttpTestCase
     public void getRepositoryBare() throws Exception
     {
         String repositoryURI = this.serverURI.toASCIIString();
-        String localPath = this.tmpFolder.newFolder("getRepositoryBareWithCredentials").toString();
         CloneCommand cloneCommand = Git.cloneRepository();
         cloneCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(AppServer.username,
             AppServer.password));
         cloneCommand.setBare(true);
-        Repository repository = this.mocker.getComponentUnderTest().getRepository(repositoryURI, localPath,
-            cloneCommand);
+        Repository repository = this.mocker.getComponentUnderTest().getRepository(repositoryURI,
+            "getRepositoryBare", cloneCommand);
         assertNotNull(repository);
         assertEquals(true, repository.isBare());
     }
